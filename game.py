@@ -25,7 +25,8 @@ class Game:
         self.sounds["slap"].set_volume(SOUNDS_VOLUME)
         self.sounds["screaming"] = pygame.mixer.Sound(f"Assets/Sounds/screaming.wav")
         self.sounds["screaming"].set_volume(SOUNDS_VOLUME)
-
+        self.sounds["tnt"] = pygame.mixer.Sound(f"Assets/Sounds/tnt.mp3")
+        self.sounds["tnt"].set_volume(SOUNDS_VOLUME)
 
 
     def reset(self): # reset all the needed variables

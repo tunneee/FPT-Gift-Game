@@ -2,6 +2,7 @@ import pygame
 import image
 from settings import *
 from hand_tracking import HandTracking
+from tnt import Tnt
 import cv2
 
 class Hand:
@@ -41,7 +42,10 @@ class Hand:
             for insect in self.on_insect(insects):
                 insect_score = insect.kill(insects)
                 score += insect_score
-                sounds["slap"].play()
+                if isinstance(insect,Tnt ):
+                    sounds["tnt"].play()
+                else:
+                    sounds["slap"].play()
                 if insect_score < 0:
                     sounds["screaming"].play()
         else:
