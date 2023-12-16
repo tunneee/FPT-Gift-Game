@@ -3,10 +3,10 @@ import pygame
 WINDOW_NAME = "Săn quà cùng FPT UNIVERSITY DA NANG"
 # GAME_TITLE = "Present"
 
-SCREEN_WIDTH, SCREEN_HEIGHT = 1920, 1200
+SCREEN_WIDTH, SCREEN_HEIGHT = 1920, 1080
 
 
-FPS = 90
+FPS = 30
 DRAW_FPS = True
 
 # sizes
@@ -24,12 +24,12 @@ TNT_SIZE_RANDOMIZE = (1, 2)
 DRAW_HITBOX = False  # will draw all the hitbox
 
 # animation
-ANIMATION_SPEED = 0.08  # the frame of the insects will change every X sec
+ANIMATION_SPEED = 0.05  # the frame of the insects will change every X sec
 
 # difficulty
-GAME_DURATION = 20  # the game will last X sec
+GAME_DURATION = 40  # the game will last X sec
 PRESENTS_SPAWN_TIME = 1
-PRESENTS_MOVE_SPEED = {"min": 10, "max": 15}
+PRESENTS_MOVE_SPEED = {"min": 7, "max": 10}
 # will remove X of the score of the player (if he kills a bee)
 TNT_PENALITY = 2
 

@@ -16,7 +16,7 @@ class Game:
         self.background = Background_game()
         self.background_endgame = Background_endgame()
         # Load camera
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(1)
 
         self.high_score = 0
 
@@ -57,6 +57,24 @@ class Game:
     def load_camera(self):
         _, self.frame = self.cap.read()
 
+        height, width, _ = self.frame.shape
+
+        # Define the zoom factor (e.g., 2x)
+        zoom_factor = 2
+
+        # Calculate the new dimensions for the zoomed frame
+        new_height = int(height / zoom_factor)
+        new_width = int(width / zoom_factor)
+
+        # Calculate the top-left corner coordinates for the ROI
+        start_row = int((height - new_height) / 2)
+        start_col = int((width - new_width) / 2)
+
+        # Crop the frame to create the zoom effect
+        zoomed_frame = self.frame[start_row:start_row + new_height, start_col:start_col + new_width]
+
+        self.frame = zoomed_frame
+ 
 
     def set_hand_position(self):
         self.frame = self.hand_tracking.scan_hands(self.frame)
@@ -122,19 +140,19 @@ class Game:
         else: # when the game is over
             self.draw_endgame()
             ui.present(self.surface, 200)
-            if self.score >= 20:
-                ui.draw_text(self.surface, "Congratulations! You have received gift number 1", (SCREEN_WIDTH//2, SCREEN_HEIGHT-500), COLORS["title"], font=FONTS["medium"],
+            if self.score >= 15:
+                ui.draw_text(self.surface, "Congratulations! You have received gift number 1", (SCREEN_WIDTH//2, SCREEN_HEIGHT-450), COLORS["title"], font=FONTS["medium"],
                     shadow=True, shadow_color=(0,0,0), pos_mode="center")
-            elif self.score >= 15:
-                ui.draw_text(self.surface, "Congratulations! You have received gift number 2", (SCREEN_WIDTH//2, SCREEN_HEIGHT-500), COLORS["title"], font=FONTS["medium"],
+            elif self.score >= 10:
+                ui.draw_text(self.surface, "Congratulations! You have received gift number 2", (SCREEN_WIDTH//2, SCREEN_HEIGHT-450), COLORS["title"], font=FONTS["medium"],
                     shadow=True, shadow_color=(0,0,0), pos_mode="center")
             else:
-                ui.draw_text(self.surface, "Congratulations! You have received gift number 3", (SCREEN_WIDTH//2, SCREEN_HEIGHT-500), COLORS["title"], font=FONTS["medium"],
+                ui.draw_text(self.surface, "Congratulations! You have received gift number 3", (SCREEN_WIDTH//2, SCREEN_HEIGHT-450), COLORS["title"], font=FONTS["medium"],
                     shadow=True, shadow_color=(0,0,0), pos_mode="center")
                 
             if ui.button(self.surface, SCREEN_HEIGHT - BUTTONS_SIZES[1]*2.2, "Continue", click_sound=self.sounds["slap"]):
                 return "menu"
 
-
+        cv2.resize(self.frame, (960, 540))
         cv2.imshow("Frame", self.frame)
         cv2.waitKey(1)
