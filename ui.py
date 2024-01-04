@@ -40,9 +40,17 @@ def button(surface, pos_y, text=None, click_sound=None):
             click_sound.play()
         return True
 
-def present(surface, pos_y):
-    rect = pygame.Rect((SCREEN_WIDTH//2 - 400//2, pos_y), (400,400))
+def present(surface, index_present):
+    rect = pygame.Rect((SCREEN_WIDTH//2 - 400//2, SCREEN_HEIGHT//2 - 400//2), (400,400))
 
-    image = pygame.image.load("Assets\present\present.png")  # Thay đổi đường dẫn đến hình ảnh của bạn
+    if (index_present==1):
+        image = pygame.image.load("Assets\present\present_1.png")  # Thay đổi đường dẫn đến hình ảnh của bạn
+    
+    if (index_present==2):
+        image = pygame.image.load("Assets\present\present_2.png") 
+    
+    if (index_present==3):
+        image = pygame.image.load("Assets\present\present_3.png") 
+
     image = pygame.transform.scale(image, (400,400))
     surface.blit(image, rect)

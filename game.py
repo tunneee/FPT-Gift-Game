@@ -39,19 +39,19 @@ class Game:
 
 
     def spawn_insects(self):
+        
         t = time.time()
         if t > self.insects_spawn_timer:
             self.insects_spawn_timer = t + PRESENTS_SPAWN_TIME
 
             # increase the probability that the insect will be a tnt over time
-            nb = (GAME_DURATION-self.time_left)/GAME_DURATION * 100 / 2   # increase from 0 to 50 during all  the game (linear)
-            if random.randint(-5, 90) < nb:
+            nb = (GAME_DURATION-self.time_left)/GAME_DURATION * 150 / 2   # increase from 0 to 50 during all  the game (linear)
+            if random.randint(-5, 60) < nb:
                 self.insects.append(Tnt())
             else:
                 self.insects.append(Present())
-
-            # spawn a other mosquito after the half of the game
-            if self.time_left < GAME_DURATION/2:
+            
+            if self.time_left < (GAME_DURATION/3)*2:
                 self.insects.append(Present())
 
     def load_camera(self):
@@ -60,15 +60,15 @@ class Game:
         height, width, _ = self.frame.shape
 
         # Define the zoom factor (e.g., 2x)
-        zoom_factor = 2
+        zoom_factor = 1
 
         # Calculate the new dimensions for the zoomed frame
         new_height = int(height / zoom_factor)
         new_width = int(width / zoom_factor)
 
         # Calculate the top-left corner coordinates for the ROI
-        start_row = int((height - new_height) / 2)
-        start_col = int((width - new_width) / 2)
+        start_row = int((height - new_height) / zoom_factor)
+        start_col = int((width - new_width) / zoom_factor)
 
         # Crop the frame to create the zoom effect
         zoomed_frame = self.frame[start_row:start_row + new_height, start_col:start_col + new_width]
@@ -80,7 +80,7 @@ class Game:
         self.frame = self.hand_tracking.scan_hands(self.frame)
         (x, y) = self.hand_tracking.get_hand_center()
         self.hand.rect.center = (x, y)
-
+    
     def draw_endgame(self):
         self.background_endgame.draw(self.surface)
 
@@ -93,16 +93,16 @@ class Game:
         # draw the hand
         self.hand.draw(self.surface)
         # draw the score
-        ui.draw_text(self.surface, f"Score : {self.score}", (5, SCREEN_HEIGHT-120), COLORS["score"], font=FONTS["medium"],
+        ui.draw_text(self.surface, f"Score : {self.score}", (5, 0.9*SCREEN_HEIGHT), COLORS["score"], font=FONTS["medium"],
                     shadow=True, shadow_color=(255,255,255))
         
         # draw the high score
-        ui.draw_text(self.surface, f"High score : {self.high_score}", (5, SCREEN_HEIGHT-60), COLORS["score"], font=FONTS["medium"],
+        ui.draw_text(self.surface, f"High score : {self.high_score}", (5, 0.95*SCREEN_HEIGHT), COLORS["score"], font=FONTS["medium"],
                     shadow=True, shadow_color=(255,255,255))
 
         # draw the time left
         timer_text_color = (160, 40, 0) if self.time_left < 5 else COLORS["timer"] # change the text color if less than 5 s left
-        ui.draw_text(self.surface, f"Time left : {self.time_left}", (SCREEN_WIDTH - 350, SCREEN_HEIGHT-60),  timer_text_color, font=FONTS["medium"],
+        ui.draw_text(self.surface, f"Time left : {self.time_left}", (0.81*SCREEN_WIDTH, SCREEN_HEIGHT*0.95),  timer_text_color, font=FONTS["medium"],
                     shadow=True, shadow_color=(255,255,255))
 
 
@@ -139,15 +139,25 @@ class Game:
 
         else: # when the game is over
             self.draw_endgame()
-            ui.present(self.surface, 200)
-            if self.score >= 15:
-                ui.draw_text(self.surface, "Congratulations! You have received gift number 1", (SCREEN_WIDTH//2, SCREEN_HEIGHT-450), COLORS["title"], font=FONTS["medium"],
+            
+            if self.score >= 10:
+                # ui.present(self.surface, 1)
+                ui.draw_text(self.surface, f"Score : {self.score}", (SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.5), COLORS["score"], font=FONTS["medium"],
+                        shadow=True, shadow_color=(255,255,255), pos_mode="center")
+                ui.draw_text(self.surface, "Congratulations! You have received gift", (SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.75), COLORS["title"], font=FONTS["medium"],
                     shadow=True, shadow_color=(0,0,0), pos_mode="center")
-            elif self.score >= 10:
-                ui.draw_text(self.surface, "Congratulations! You have received gift number 2", (SCREEN_WIDTH//2, SCREEN_HEIGHT-450), COLORS["title"], font=FONTS["medium"],
-                    shadow=True, shadow_color=(0,0,0), pos_mode="center")
+            # elif self.score >= 7:
+            #     ui.present(self.surface, 2)
+            #     ui.draw_text(self.surface, "Congratulations! You have received FPT Notebook", (SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.75), COLORS["title"], font=FONTS["medium"],
+            #         shadow=True, shadow_color=(0,0,0), pos_mode="center")
+            # elif self.score >= 5:
+            #     ui.present(self.surface, 3)
+            #     ui.draw_text(self.surface, "Congratulations! You have received FPT Card Strap", (SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.75), COLORS["title"], font=FONTS["medium"],
+            #         shadow=True, shadow_color=(0,0,0), pos_mode="center")
             else:
-                ui.draw_text(self.surface, "Congratulations! You have received gift number 3", (SCREEN_WIDTH//2, SCREEN_HEIGHT-450), COLORS["title"], font=FONTS["medium"],
+                ui.draw_text(self.surface, f"Score : {self.score}", (SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.5), COLORS["score"], font=FONTS["medium"],
+                        shadow=True, shadow_color=(255,255,255), pos_mode="center")
+                ui.draw_text(self.surface, "Have a nice day!", (SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.75), COLORS["title"], font=FONTS["medium"],
                     shadow=True, shadow_color=(0,0,0), pos_mode="center")
                 
             if ui.button(self.surface, SCREEN_HEIGHT - BUTTONS_SIZES[1]*2.2, "Continue", click_sound=self.sounds["slap"]):

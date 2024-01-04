@@ -32,6 +32,7 @@ menu = Menu(SCREEN)
 
 # Functions ------------------------------------------------------ #
 def user_events():
+    global flag_reset
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -41,24 +42,30 @@ def user_events():
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 sys.exit()
-
+            if event.key == pygame.K_r:
+                flag_reset=True
+                 
 
 def update():
-    global state
+    global state,flag_reset
     if state == "menu":
-        if menu.update() == "game":
+        if menu.update() == "game" or flag_reset==True:
             game.reset()  # reset the game to start a new game
             state = "game"
     elif state == "game":
         if game.update() == "menu":
             state = "menu"
+        if  flag_reset==True:
+            game.reset()
+            state = "game"
     pygame.display.update()
     mainClock.tick(FPS)
-
+                
 
 # Loop ------------------------------------------------------------ #
 while True:
 
+    flag_reset=False    
     # Buttons ----------------------------------------------------- #
     user_events()
 
